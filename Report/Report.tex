@@ -127,6 +127,19 @@ The authors implemented Smooth Scan in PostgreSQL and claim that it achieves rob
 %- Smooth scan on SSD is faster than full scan for selectivity lower than 20$\%$, and it is only 10$\%$ slower compared to full scan for 100$\%$ selectivity.
 
 \section{Plan for verification}
+In the current project we will try to verify some of the claims stated in the paper. 
+Due to time constraints we will not implement the \emph{Smooth Scan}, but only the \emph{index scan}, the \emph{full table scan}, and the \emph{switch scan}. 
+These three scans will be compared on execution time, for different values of selectivity. 
+Hereby we will try to replicate Figure 12 from the paper \cite{smoothscan}.
+%- ik vind het lastig om aan te geven welke claims we nu eigenlijk echt gaan verifiëren. Index scan met full table scan vergelijken is namelijk al best veel gedaan, dus we gaan dit natuurlijk gewoon verifiëren...
+
+\subsection{Index Scan}
+For the \emph{index scan} a B\textsuperscript{+}-trees will be used.
+
+All scans will be tested on a randomly generated database, in which multiple values occur more than once. 
+The execution time will be measured for all scans with different selectivity levels. 
+
+
 
 \section{Progress}
 
