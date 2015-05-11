@@ -85,11 +85,11 @@
 \HRule \\[1.5cm]
 
 % Author and supervisor
-	\emph{Group TODO:}\\
+	\emph{Group number 25:}\\
     \begin{tabular}{l l l}
 	Sander \textsc{Breukink} & 0741209 & \href{mailto:s.c.breukink@student.tue.nl}{\texttt{s.c.breukink@student.tue.nl}}\\
 	Rianne \textsc{Conijn} & 0740635 & \href{mailto:m.a.conijn@student.tue.nl}{\texttt{m.a.conijn@student.tue.nl}}\\
-	Harm \textsc{van Schaaijk} & TODO & \href{mailto:h.a.h.v.schaaijk@student.tue.nl}{\texttt{h.a.h.v.schaaijk@student.tue.nl}}\\
+	Harm \textsc{van Schaaijk} & 0873871 & \href{mailto:h.a.h.v.schaaijk@student.tue.nl}{\texttt{h.a.h.v.schaaijk@student.tue.nl}}\\
 	Jasper \textsc{Selman} & 0741516 & \href{mailto:j.w.m.selman@student.tue.nl}{\texttt{j.w.m.selman@student.tue.nl}}\\
 	Tom \textsc{Vogels} & 0871231 & \href{mailto:t.j.h.vogels@student.tue.nl}{\texttt{t.j.h.vogels@student.tue.nl}}
     \end{tabular}
@@ -106,10 +106,10 @@
 Nowadays big data is booming business. A way to handle all this data in a fast efficient manner is very important for this cause. That is why at this time there are a lot of query optimizers, but these optimizers need statistics about the big data to create good query plans. The problem is in many of these cases such statistics are sparse or even non-existent. \\
 \\
 This is why Borovica, Idreas, Ailamakki, Zukowsku, and Fraser (2015) \cite{smoothscan} deisgned a new method for the query optimizations decisions, the process of deciding which physical operators are used and in what order. Note that these decisions can affect the response time by several orders of magnitude and are therefore crucial in creating an optimally performing database. The proposed method is called \emph{Smooth Scan} and its results are compared to those of a \emph{full table scan}, an \emph{index scan} and a \emph{switch scan}. The \emph{smooth scan} is inspired by adaptive query processing, a technique which uses runtime feedback to modify query processing to get a better response time or more efficient CPU utilization (Deshpande, Ives, $\&$ Raman, 2007) \cite{query}.\\
-\\ 
+\\
 The motivation for this article is the severe impact several scanning methods have on the total execution time, a response time which, in this day and age, becomes increasingly important. It also seems that the cost models for performance estimations deviate increasingly as the system becomes more complex. Combined with the fact that the complexity of modern workloads and the technological shift towards cloud environments, query optimization becomes increasingly important. Because of these reasons there is enough motivation to discuss a new scanning method for query handling.
 
-%The report also discusses the trade-off between CPU operations and I/O operations. Because it is possible to do several thousands of CPU operations in the time needed for one I/O operation, this trade-off is very often beneficial for the performance. Since the durations of these operations are subject to continuous change because of the fact hardware is always being improved, this too is a motivation for writing this article. 
+%The report also discusses the trade-off between CPU operations and I/O operations. Because it is possible to do several thousands of CPU operations in the time needed for one I/O operation, this trade-off is very often beneficial for the performance. Since the durations of these operations are subject to continuous change because of the fact hardware is always being improved, this too is a motivation for writing this article.
 
 \section{Research problem}
 The main problem addressed in the paper is that once a decision is made by the query optimizer, this decision is fixed throughout the execution of a query. This can result in suboptimal plans and even a small estimation error can lead to drastically different performance results. These unpredictable results makes the system non-robust. The authors define robustness as: “the ability of a system to efficiently cope with unexpected and adverse conditions, and deliver near-optimal performance for all query inputs.” In their paper they try to achieve robust query processing.
@@ -127,13 +127,13 @@ The authors implemented Smooth Scan in PostgreSQL and claim that it achieves rob
 %- Smooth scan on SSD is faster than full scan for selectivity lower than 20$\%$, and it is only 10$\%$ slower compared to full scan for 100$\%$ selectivity.
 
 \section{Plan for verification}
-In the current project we will try to verify some of the claims stated in the paper. 
+In the current project we will try to verify some of the claims stated in the paper.
 Due to time constraints we will not implement the \emph{Smooth Scan}, but only the \emph{index scan}, the \emph{full table scan}, and the \emph{switch scan}.
 For the \emph{index scan} a B\textsuperscript{+}-trees will be used. The \emph{switch scan}  will switch on a cardinality estimate, which still has to be set. This estimate will be comparable to the value set by Borovica et al. \cite{smoothscan}, who used a cardinality of 15K tuples out of 400M.
 \\
-These three scanswill be implented in PostgreSQL 9.2.1 DBMS and compared on execution time, for different selectivity levels. 
+These three scanswill be implented in PostgreSQL 9.2.1 DBMS and compared on execution time, for different selectivity levels.
 Hereby we will try to replicate Figure 12 from the paper \cite{smoothscan}.
-All scans will be tested on a randomly generated database, in which multiple values occur more than once. 
+All scans will be tested on a randomly generated database, in which multiple values occur more than once.
 
 %- ik vind het lastig om aan te geven welke claims we nu eigenlijk echt gaan verifiëren. Index scan met full table scan vergelijken is namelijk al best veel gedaan, dus we gaan dit natuurlijk gewoon verifiëren...
 
