@@ -131,7 +131,7 @@ In the current project we will try to verify some of the claims stated in the pa
 Due to time constraints we will not implement the \emph{Smooth Scan}, but only the \emph{index scan}, the \emph{full table scan}, and the \emph{switch scan}.
 For the \emph{index scan} a B\textsuperscript{+}-trees will be used. The \emph{switch scan}  will switch on a cardinality estimate, which still has to be set. This estimate will be comparable to the value set by Borovica et al. \cite{smoothscan}, who used a cardinality of 15K tuples out of 400M.
 \\
-These three scanswill be implented in PostgreSQL 9.2.1 DBMS and compared on execution time, for different selectivity levels.
+These three scans will be implemented in PostgreSQL 9.2.1 DBMS and compared on execution time, for different selectivity levels.
 Hereby we will try to replicate Figure 12 from the paper \cite{smoothscan}.
 All scans will be tested on a randomly generated database, in which multiple values occur more than once.
 
