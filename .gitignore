@@ -91,36 +91,36 @@ Report/*.ind
 Report/*.ist
 
 # minitoc
-*.maf
-*.mtc
-*.mtc0
+Report/*.maf
+Report/*.mtc
+Report/*.mtc0
 
 # minted
-_minted*
-*.pyg
+Report/*_minted*
+Report/*.pyg
 
 # morewrites
-*.mw
+Report/*.mw
 
 # nomencl
-*.nlo
+Report/*.nlo
 
 # sagetex
-*.sagetex.sage
-*.sagetex.py
-*.sagetex.scmd
+Report/*.sagetex.sage
+Report/*.sagetex.py
+Report/*.sagetex.scmd
 
 # sympy
-*.sout
-*.sympy
-sympy-plots-for-*.tex/
+Report/*.sout
+Report/*.sympy
+Report/*sympy-plots-for-*.tex/
 
 # todonotes
-*.tdo
+Report/*.tdo
 
 # xindy
-*.xdy
+Report/*.xdy
 
 # WinEdt
-*.bak
-*.sav
+Report/*.bak
+Report/*.sav
