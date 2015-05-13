@@ -121,18 +121,10 @@ The authors implemented Smooth Scan in PostgreSQL and claim that it achieves rob
 %- Smooth scan on SSD is faster than full scan for selectivity lower than 20$\%$, and it is only 10$\%$ slower compared to full scan for 100$\%$ selectivity.
 
 \section{Plan for verification}
-During this project we want to verify the claims made in the paper by simulating the behavior of the \emph{smooth scan}. First of all, the penalties for the index scan and full scan will be estimated. These estimates will be used to calculate the cost and thereby the execution time for the full and index scan for queries with different values of selectivity.
-Also different properties of the database will be included and compared, such as clustered versus unclustered data.\\
+During this project we want to verify the claims made in the paper by simulating the behavior of the \emph{smooth scan}. First of all, the penalties for the index scan and full scan will be estimated. These estimations will be used to calculate the cost and thereby the execution time of the \emph{full scan} and \emph{index scan} for queries with different values of selectivity. Different properties of the database will be included and compared, such as clustered versus unclustered data. \\
 After this base situation is set up, we will simulate the behavior of the \emph{switch scan}, which will switch on set cardinality estimate and compare the results between the different established scenarios in order to verify the claims and key-idea of the paper.\\
 If there is time left, we will conclude with the simulation of the \emph{smooth scan} and add these results to the comparison.
-% In the current project we will try to verify some of the claims stated in the paper.
-%Due to time constraints we will not implement the \emph{Smooth Scan}, but only the \emph{index scan}, the \emph{full table scan}, and the \emph{switch scan}.
-%For the \emph{index scan} a B\textsuperscript{+}-trees will be used. The \emph{switch scan}  will switch on a cardinality estimate, which still has to be set. This estimate will be %comparable to the value set by Borovica et al. \cite{smoothscan}, who used a cardinality of 15K tuples out of 400M.
-%\\
-%These three scans will be implemented in PostgreSQL 9.2.1 DBMS and compared on execution time, for different selectivity levels.
-%Hereby we will try to replicate Figure 12 from the paper \cite{smoothscan}.
-%All scans will be tested on a randomly generated database, in which multiple values occur more than once.
-%
+
 %- ik vind het lastig om aan te geven welke claims we nu eigenlijk echt gaan verifiëren. Index scan met full table scan vergelijken is namelijk al best veel gedaan, dus we gaan dit natuurlijk gewoon verifiëren...
 
 \section{Progress}
