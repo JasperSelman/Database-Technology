@@ -121,7 +121,9 @@ The authors implemented Smooth Scan in PostgreSQL and claim that it achieves rob
 %- Smooth scan on SSD is faster than full scan for selectivity lower than 20$\%$, and it is only 10$\%$ slower compared to full scan for 100$\%$ selectivity.
 
 \section{Plan for verification}
-Gewoon in C doen, geen queries, wel penalties.
+In the current project we want to verify the claims based in the paper by simulating the behavior of the smooth scan. First of all, the penalties for the index scan and full scan will be estimated. These estimates will be used to calculate the cost and thereby the execution time for the full and index scan for queries with different values of selectivity. Also different properties of the database will included and compared, such as clustered versus unclustered.
+Thereafter, we will simulate the behavior of the \emph{switch scan}, which will switch on set cardinality estimate. This estimate will be %comparable to the value set by Borovica et al. \cite{smoothscan}, who used a cardinality of 15K tuples out of 400M.
+If there is time left, we will conclude with the simulation of the smooth scan.
 % In the current project we will try to verify some of the claims stated in the paper.
 %Due to time constraints we will not implement the \emph{Smooth Scan}, but only the \emph{index scan}, the \emph{full table scan}, and the \emph{switch scan}.
 %For the \emph{index scan} a B\textsuperscript{+}-trees will be used. The \emph{switch scan}  will switch on a cardinality estimate, which still has to be set. This estimate will be %comparable to the value set by Borovica et al. \cite{smoothscan}, who used a cardinality of 15K tuples out of 400M.
