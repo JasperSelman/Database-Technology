@@ -11,4 +11,7 @@ SELECTIVITY = .2;
 Data = [ones(TUPLECNT,(SELECTIVITY*PAGECNT)) zeros(TUPLECNT,((1-SELECTIVITY)*PAGECNT))];        
 Data(randperm(numel(Data))) = Data;
 
-%%
+%% RUN a full scan on the data above
+fs = FullScan(Data);
+fs.scan();
+fs

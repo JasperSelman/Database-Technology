@@ -5,7 +5,6 @@ classdef Scan < handle
 
     properties
         Data;
-        treePenalty = 0;
         randomPagePenalty = 0;
         sequentialPagePenalty = 0;
         returnPenalty = 0;
