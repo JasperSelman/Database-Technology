@@ -1,0 +1,2 @@
+- Klopt onze opstelling?
+- Is het voldoende om de index scan een range query te houden?
