@@ -1,0 +1,107 @@
+long treePenalty = 0;
+long randomPagePenalty = 0;
+long sequentialPagePenalty = 0;
+long retunPenalty = 0;
+
+int pageSize;
+int treeHeight;
+
+int selectivity;
+
+void indexAcces()
+{
+	treePenalty++;
+	randomPagePenalty++;
+	if(accesses % selectivity == 0)
+	{
+		retunPenalty++;
+	}
+}
+
+int fpsScannedTuples = 0;
+void fullpageAcces()
+{
+#ifdef CLUSTERED
+	treePenalty++;
+	if(fpsScannedTuples++ == pageSize)
+	{
+		sequentialPagePenalty++;
+		fpsScannedTuples = 0;
+	}
+	if(accesses % selectivity == 0)
+	{
+		retunPenalty++;
+	}
+	}		
+#else
+	treePenalty++;
+	if(fpsScannedTuples++ == pageSize)
+	{
+		randomPagePenalty++;
+	}
+	if(accesses % selectivity == 0)
+	{
+		retunPenalty++;
+	}
+#endif	
+}
+
+void indexScan(const int accesses)
+{
+	for(; accesses; accesses--)
+	{
+		indexAcces();
+	}
+}
+
+void fullpageScan(const int accesses)
+{
+	for(; accesses; accesses--)
+	{
+		fullpageAcces();
+	}
+}
+
+void switchscan(const int accesses)
+{
+	const int _accesses = accesses;
+	for(; _accesses; _accesses--)
+	{
+		indexAcces();
+		//some bookkeeping
+		if(!bookkeeping)
+		{
+			break;
+		}
+	}
+	for(; accesses; accesses--)
+	{
+		fullpageAcces();
+	}
+}
+
+void resetValues()
+{
+	treeheight = somenumber;
+	// etc
+}
+
+void main()
+{
+	const int accesses = 1000000;
+	
+	for(selectivity = 0; selectivity < 100; selectivity++)
+	{
+		resetValues();
+		indexScan(accesses);
+		// do something with values
+		
+		resetValues();
+		fullpageScan(accesses);
+		// do something with values
+		
+		resetValues();
+		switchScan(accesses);
+		// do something with values
+	}
+}
