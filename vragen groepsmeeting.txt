@@ -1,2 +1,4 @@
 - Klopt onze opstelling?
 - Is het voldoende om de index scan een range query te houden?
+- Zijn de waarden (assumpties, penalties, etc.) een beetje representatief?
+
