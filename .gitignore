@@ -124,3 +124,15 @@ Report/*.xdy
 # WinEdt
 Report/*.bak
 Report/*.sav
+
+# Windows default autosave extension
+Simulation/*.asv
+
+# OSX / *nix default autosave extension
+Simulation/*.m~
+
+# Compiled MEX binaries (all platforms)
+Simulation/*.mex*
+
+# Simulink Code Generation
+Simulation/*slprj/
