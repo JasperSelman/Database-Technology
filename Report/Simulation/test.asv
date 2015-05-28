@@ -5,7 +5,7 @@ close all;
 %% INIT
 PAGECNT = 1000000; %Totale aantal pagina's
 TUPLECNT = 50; %Aantal tuples per pagina
-SELECTIVITIES = [1 .8 .6 .4 .2 .1 .05 .02 .01 .005 .001];%Percentage (tussen 0...1) van de tuples die aan de query zouden voldoen 
+SELECTIVITIES = [.001 .005 .01 .02 .05 .1 .2 .4 .6 .8 1];%Percentage (tussen 0...1) van de tuples die aan de query zouden voldoen 
 randomfactor = 20; %Penalty Random vs Sequential is 10:1
 fsPenaltySeq = zeros(1,length(SELECTIVITIES));
 isPenaltySeq = zeros(1,length(SELECTIVITIES));
