@@ -4,7 +4,7 @@ close all;
 
 %% INIT
 PAGECNT = 1000000; %Totale aantal pagina's
-TUPLECNT = 10; %Aantal tuples per pagina
+TUPLECNT = 50; %Aantal tuples per pagina
 SELECTIVITIES = [.001 .005 .01 .02 .05 .1 .2 .4 .6 .8 1];%Percentage (tussen 0...1) van de tuples die aan de query zouden voldoen 
 randomfactor = 20; %Penalty Random vs Sequential is 10:1
 fsPenaltySeq = zeros(1,length(SELECTIVITIES));
@@ -15,7 +15,8 @@ is.randomPagePenalty = zeros(1,length(SELECTIVITIES));
 for i=1:length(SELECTIVITIES)
     SELECTIVITY = SELECTIVITIES(i);
     %# Fill the array with 0 and 1 and reorder
-    Data = [ones(TUPLECNT,(SELECTIVITY*PAGECNT)) zeros(TUPLECNT,((1-SELECTIVITY)*PAGECNT))];        
+    size = int64((1-SELECTIVITY)*PAGECNT);
+    Data = [ones(TUPLECNT,(SELECTIVITY*PAGECNT)) zeros(TUPLECNT,size)];        
     Data(randperm(numel(Data))) = Data;
 
     %% RUN a full scan on the data above
