@@ -11,6 +11,7 @@ fsPenaltySeq = zeros(1,length(SELECTIVITIES));
 isPenaltySeq = zeros(1,length(SELECTIVITIES));
 fs.randomPagePenalty = zeros(1,length(SELECTIVITIES));
 is.randomPagePenalty = zeros(1,length(SELECTIVITIES));
+cardinality = 0.005*PAGECNT*TUPLECNT; %for random factor 20 from selectivity > 0.005 full scan performs better
 
 for i=1:length(SELECTIVITIES)
     SELECTIVITY = SELECTIVITIES(i);
@@ -20,7 +21,7 @@ for i=1:length(SELECTIVITIES)
 
     %% RUN a full scan on the data above
     fs = FullScan(Data);
-    fs.scan();
+    fs.fullscan();
     fs;
     fsPenaltyRand(i)= fs.randomPagePenalty;
     fsPenaltySeq(i)= fs.sequentialPagePenalty;
@@ -28,23 +29,32 @@ for i=1:length(SELECTIVITIES)
 
     %% RUN an index scan on the data above
     is = IndexScan(Data);
-    is.scan();
+    is.indexscan();
     is;
     isPenaltyRand(i)= is.randomPagePenalty;
     isPenaltySeq(i)= is.sequentialPagePenalty;
     clear is;
 
+    %% RUN a switch scan on the data above
+    ss = SwitchScan(Data);
+    ss.switchscan(cardinality);
+    ss
+    ssPenaltyRand(i) = ss.randomPagePenalty;
+    ssPenaltySeq(i)= ss.sequentialPagePenalty;
+    clear ss;
+
 end
 
 fsPenalty=fsPenaltyRand*randomfactor+fsPenaltySeq; 
 isPenalty=isPenaltyRand*randomfactor+isPenaltySeq; 
+ssPenalty=ssPenaltyRand*randomfactor+ssPenaltySeq;
 
 %% FIGURE for random penalty
-semilogy( SELECTIVITIES,fsPenalty,'x-', SELECTIVITIES,isPenalty,'x-');
+semilogy( SELECTIVITIES,fsPenalty,'x-', SELECTIVITIES,isPenalty,'x-', SELECTIVITIES,ssPenalty,'x-');
 title('Penalties for Range query on non-clustered data')
 xlabel('Selectivity')
 ylabel('Penalty')
-legend('Full Scan','Index Scan')
+legend('Full Scan','Index Scan', 'Switch Scan')
 
 
 %%
