@@ -3,7 +3,7 @@ classdef IndexScan < Scan & handle
         Ks = 4; %32 pointer in bytes
     end   
     
-    properties (Access = private)
+    properties %(Access = private)
         Ps = 0;         % Page size (tuples per page)
         Ntuples = 0;    % Total number of tuples
         fanout = 0;     % fanout
@@ -25,7 +25,7 @@ classdef IndexScan < Scan & handle
         end
         
         %scan function
-        function scan(obj) 
+        function indexscan(obj) 
             cnt = 0;
             
             %We assume range queries, hence we go trough the tree only once
