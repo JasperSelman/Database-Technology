@@ -11,16 +11,16 @@ fsPenaltySeq = zeros(1,length(SELECTIVITIES));
 isPenaltySeq = zeros(1,length(SELECTIVITIES));
 fs.randomPagePenalty = zeros(1,length(SELECTIVITIES));
 is.randomPagePenalty = zeros(1,length(SELECTIVITIES));
-cardinality = 0.010*PAGECNT*TUPLECNT; %for random factor 20 from selectivity > 0.005 full scan performs better
+cardinality = 0.005*PAGECNT*TUPLECNT; %for random factor 20 from selectivity > 0.005 full scan performs better
 
 for i=1:length(SELECTIVITIES)
     i
     SELECTIVITY = SELECTIVITIES(i);
     %# Fill the array with 0 and 1 and reorder
     size = int64((1-SELECTIVITY)*PAGECNT);
-    Data = [ones(TUPLECNT,(SELECTIVITY*PAGECNT)) zeros(TUPLECNT,size)];
+    Data = [ones(TUPLECNT,((SELECTIVITY+1/PAGECNT)*PAGECNT)) zeros(TUPLECNT,size)];
     memory
-    Data(randperm(numel(Data))) = Data;
+    %Data(randperm(numel(Data))) = Data;
 
     %% RUN a full scan on the data above
     fs = FullScan(Data);
