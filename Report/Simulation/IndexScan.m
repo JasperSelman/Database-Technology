@@ -29,7 +29,7 @@ classdef IndexScan < Scan & handle
             cnt = 0;
             
             %We assume range queries, hence we go trough the tree only once
-            obj.randomPagePenalty = obj.height;
+            obj.randomPagePenalty = obj.randomPagePenalty + obj.height;
             
             for i = 1 : numel(obj.Data)
                 %We assume non clustered data, hence a random access for
