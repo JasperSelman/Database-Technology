@@ -130,7 +130,7 @@ The costs for the index scan include the traverse down the tree. For a range que
 \subsection{Full scan}
 The costs for full scan include one random access (begin) and for each column a sequential access. Here again we assumed that the penalty for random search is between 10-100 times larger than for sequential search. The I/O costs of the full scan equal the costs to of fetching all pages sequentially. The comparison of the tuples invokes CPU costs. The Matlab code for the simulation of the full scan can be found in Appendix \ref{appendixb}.
 \subsection{Switch scan}
-The costs of the switch scan is a combination of the costs of the previous 2 scans. If the selectivity is low, the costs of this scan is equal to the cost of the index scan. But when we increase the selectivity, the cost of this scan resembles more with the cost of the full scan. Once the selectivity reaches a certain threshold, which is 0,01 in our code, it stops with the index scan and continues  with the full scan. After this switch the total cost os switch scan is nearly the double of the value of the cost of the full scan, this increase in time is cause by the time spent ineffectively on the index scan. The Matlab code for the simulation of the Switch scan can be found in Appendix \ref{appendixa}.
+The costs of the switch scan is a combination of the costs of the previous 2 scans. If the selectivity is low, the costs of this scan is equal to the cost of the index scan. But when we increase the selectivity, the cost of this scan resembles more with the cost of the full scan. Once the selectivity reaches a certain threshold, which is 0,01 in our code, it stops with the index scan and continues  with the full scan. After this switch the total cost os switch scan is nearly the double of the value of the cost of the full scan, this increase in time is cause by the time spent ineffectively on the index scan. The Matlab code for the simulation of the Switch scan can be found in Appendix \ref{appendixc}.
 \subsection{Smooth scan}
 tbd
 
@@ -198,7 +198,7 @@ todo
 \label{appendixb}
 \lstinputlisting{Simulation/FullScan.m}
 \section{Code switch scan}
-\label{appendixb}
+\label{appendixc}
 \lstinputlisting{Simulation/SwitchScan.m}
 \end{appendices}
 
