@@ -66,7 +66,7 @@ classdef SwitchScan < IndexScan & handle
                 obj.randomPagePenalty = obj.randomPagePenalty + 1;
          
                 for i = 1 : size(obj.Data,2)
-                    if(non_card > numel(obj.Data)-card)
+                    if(non_card > numel(obj.Data)- card)
                         Switch = true;
                         break;
                     end
