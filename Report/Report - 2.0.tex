@@ -128,7 +128,7 @@ The costs for the index scan include the traverse down the tree. For a range que
 \subsection{Full scan}
 The costs for full scan include one random access (begin) and for each column a sequential access. Here again we assumed that the penalty for random search is between 10-100 times larger than for sequential search. The I/O costs of the full scan equal the costs to of fetching all pages sequentially. The comparison of the tuples invokes CPU costs. The Matlab code for the simulation of the full scan can be found in Appendix \ref{appendixb}.
 \subsection{Switch scan}
-tbd
+The costs of the switch scan is a combination of the costs of the previous 2 scans. If the selectivity is low, the costs of this scan is equal to the cost of the index scan. But when we increase the selectivity, the cost of this scan resembles more with the cost of the full scan. Once the selectivity reaches a certain threshold, which is 0,01 in our code, it stops with the index scan and continues  with the full scan. After this switch the total cost os switch scan is nearly the double of the value of the cost of the full scan, this increase in time is cause by the time spent ineffectively on the index scan. The Matlab code for the simulation of the Switch scan can be found in Appendix \ref{appendixa}.
 \subsection{Smooth scan}
 tbd
 
@@ -137,7 +137,7 @@ tbd
 In this section the results per scan simulated will be discussed and compared.  First we compared index scan with full scan. Figure \ref{fig:result1} shows the penalties for different selectivity values for index scan and full scan for a range query on a table with 1 milion non-clustered tuples, with 10 tuples per page. We tested different factors, stating that the penalty for a random I/O access is 10, 20,  50, or 100 times larger than for a sequential I/O access. The figure shows that for low selectivity, index scan outperforms the full scan. The higher the factor, the lower selectivity is needed for the full scan to outperform the index scan. For factor 10 the selectivity needs to be $>$ 0.01, for factor 20 selectivity needs to be $>$ 0.005, for factor 50 $>$ 0.002 and for factor 100 even $>$ 0.001.\\
 If you look at the difference in selectivity you might notice that the increment of the factor is the same as the decrement of the selectivity breakpoint for the full scan and index scan. So we can clearly see that the ratio of of the penalties of sequential access to the penalties of random access is important. Another important thing is that even in the most favorable scenario for this ratio (that is a ratio of 10:1 for random vs sequential access) the breakpoint for switching an index scan to a full scan is already at a selectivity rate of 0.01 which is equal to a selectivity of 1$\%$. This is quite contradictionary to the results found by Borovica, Idreos, Ailamaki, Zukowski, $\&$ Fraser \cite{smoothscan}. They showed in a similar graph that the breakpoint is somewhere around the 14$\%$ selectivity. This is quite a big difference since we are talking about an order of magnitude difference and this is even in the best case. They claimed that the ratio of random to sequential access is somewhere in between 1 to 2 orders of magnitude, so if we look at the ratio of 100:1 we even see that we already reached the breakpoint at 0,1$\%$ selectivity. The only reasonable explantion for this difference is that the DBMS system, PostgreSQL, has all kind of optimizations for the normal index scan. We do not have these optimizations and compare the penalties of the normal index scan to the full scan. \\
 \\
-Another interesting note is that Borovica, Idreos, Ailamaki, Zukowski, $\&$ Fraser \cite{smoothscan} claim that the breakpoint for full scan and index scan lies somewhere between the 1 and 10$\%$ selectivity but the graph, based on their results, shows a clear breakpoint of 14 to 15 $\%$. This is quite contradictionary to what they claim and seems rather strange. 
+Another interesting note is that Borovica, Idreos, Ailamaki, Zukowski, $\&$ Fraser \cite{smoothscan} claim that the breakpoint for full scan and index scan lies somewhere between the 1 and 10$\%$ selectivity but the graph, based on their results, shows a clear breakpoint of 14 to 15 $\%$. This is quite contradictionary to what they claim and seems rather strange.
 
 \begin{figure}[ht!]
 \centering
@@ -192,6 +192,9 @@ Since the editors of \cite{smoothscan} would not give us the code used in their 
 \section{Code full scan}
 \label{appendixb}
 \lstinputlisting{Simulation/FullScan.m}
+\section{Code switch scan}
+\label{appendixb}
+\lstinputlisting{Simulation/SwitchScan.m}
 \end{appendices}
 
 \end{document}
