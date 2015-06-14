@@ -136,3 +136,4 @@ Simulation/*.mex*
 
 # Simulink Code Generation
 Simulation/*slprj/
+*.asv
