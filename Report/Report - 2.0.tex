@@ -123,7 +123,7 @@ In the first mode (in which \emph{Smooth Scan} always starts) a normal index sca
 The authors implemented Smooth Scan in PostgreSQL and claim that it achieves robust performance in a range of synthetic and real workloads, while being statistics-oblivious at the same time. Existing approaches fail to do so. This robust behavior results in significant gains compared to when the original system makes a wrong decision, and only marginal overheads compared to when a correct decision can be made. Besides that, the authors also did the same tests with a SSD instead of a HDD. They claimed that SSD was even more beneficial for \emph{Smooth Scan} than HDD.
 
 \section{Plan for verification}
-During this project we want to verify the claims made in the paper by simulating the behavior of the \emph{Smooth Scan} in Matlab. First of all, the penalties for the index scan and full scan will be estimated. These estimations will be used to calculate the cost and thereby the execution time of the \emph{Full Scan} and \emph{Index Scan} for queries with different values of selectivity. Different properties of the database will be included and compared, such as clustered versus non-clustered data. 
+During this project we want to verify the claims made in the paper by simulating the behavior of the \emph{Smooth Scan} in Matlab. First of all, the penalties for the index scan and full scan will be estimated. These estimations will be used to calculate the cost and thereby the execution time of the \emph{Full Scan} and \emph{Index Scan} for queries with different values of selectivity. Different properties of the database will be included and compared, such as clustered versus non-clustered data.
 
 After this base situation is set up, we will simulate the behavior of the \emph{Switch Scan}, which will switch on set cardinality estimate. These results will be compared to the different established scenarios in order to verify the claims and key idea of the paper. If there is time left, we will conclude with the simulation of the \emph{Smooth Scan} and add these results to the comparison. Below we will describe the penalties used and assumptions made for each scan we will simulate.
 
@@ -205,6 +205,7 @@ The one small part where the \textit{Switch Scan} is worse than both algorithms 
 %\pagebreak
 
 \subsection{Smooth Scan}
+\textbf{TODO: WEGHALEN OF INHOUD GEVEN.}
 
 \section{Extension of the paper}\label{sec:extension}
 In the original paper, the authors implemented the \textit{Switch Scan} in such a way that it first starts with an \textit{Index Scan} and if it turns out that the expected selectivity was way too low, it switches to a \textit{Full Scan}. We thought that it was also interesting to see what happens in the other way around, so starting with the \textit{Full Scan} and switch to an \textit{Index Scan} when the optimizers estimate for the selectivity is too high. The results for this experiment are shown in \autoref{fig:result3}.\\
