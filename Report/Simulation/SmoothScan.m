@@ -36,6 +36,7 @@ classdef SmoothScan < IndexScan & handle
             
             % Walk the tree
             obj.randomPagePenalty = obj.randomPagePenalty + obj.height;
+            cnt = 0;
             
             % For each column in Data (which are the pages)
             for i = index
@@ -55,6 +56,7 @@ classdef SmoothScan < IndexScan & handle
                     if(PAGE(j) == 1)                        
                         obj.returnPenalty = obj.returnPenalty + 1; 
                         curr_card = curr_card + 1;
+                        cnt = cnt + 1;
                       
                         %For each Ps we have at least 1 sequential access as well
                         if(cnt == obj.Ps)
