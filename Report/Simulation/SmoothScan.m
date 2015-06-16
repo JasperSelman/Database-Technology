@@ -148,7 +148,7 @@ classdef SmoothScan < IndexScan & handle
                             obj.sequentialPagePenalty_4 = obj.sequentialPagePenalty_4 + 1;
                         elseif(pcnt >= 2)
                             pcnt = 2;
-                            obj.sequentialPagePenalty_4 = obj.sequentialPagePenalty_4 + 1;
+                            obj.sequentialPagePenalty_2 = obj.sequentialPagePenalty_2 + 1;
                         else
                             pcnt = 1;
                             obj.sequentialPagePenalty = obj.sequentialPagePenalty + 1;

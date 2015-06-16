@@ -13,17 +13,16 @@ isPenaltySeq = zeros(1,length(SELECTIVITIES));
 fs.randomPagePenalty = zeros(1,length(SELECTIVITIES));
 is.randomPagePenalty = zeros(1,length(SELECTIVITIES));
 
-%0.005*PAGECNT*TUPLECNT; %for random factor 20 from selectivity > 0.005 full scan performs better
+cardinality=0.005*PAGECNT*TUPLECNT; %for random factor 20 from selectivity > 0.005 full scan performs better
 
 for i=1:length(SELECTIVITIES)
     i
     SELECTIVITY = SELECTIVITIES(i);
     %# Fill the array with 0 and 1 and reorder]
-    cardinality = 49*SELECTIVITY;
     size = int64((1-SELECTIVITY)*PAGECNT);
-    Data = [zeros(TUPLECNT,size) ones(TUPLECNT,((SELECTIVITY+1/PAGECNT)*PAGECNT))  ];
+    Data = [ones(TUPLECNT,(SELECTIVITY*PAGECNT)) zeros(TUPLECNT,((1-SELECTIVITY)*PAGECNT))];
     %memory
-    %Data(randperm(numel(Data))) = Data;
+    Data(randperm(numel(Data))) = Data;
 
     %% RUN a full scan on the data above
     fs = FullScan(Data);
@@ -51,18 +50,30 @@ for i=1:length(SELECTIVITIES)
     ssPenaltySeq(i)= ss.sequentialPagePenalty;
     ssPenaltyReturn(i)= ss.returnPenalty;
     clear ss;
+    %% RUN a smooth scan on the data above
+    sms = SmoothScan(Data);
+    sms.smoothscan();
+    sms
+    smsPenaltyRand(i) = sms.randomPagePenalty;
+    smsPenaltySeq(i)  = sms.sequentialPagePenalty;
+    smsPenaltySeq2(i) = sms.sequentialPagePenalty_2;
+    smsPenaltySeq4(i) = sms.sequentialPagePenalty_4;
+    smsPenaltySeq8(i) = sms.sequentialPagePenalty_8;
+    smsPenaltyReturn(i)= sms.returnPenalty;
+    clear sms;
 
 end
 %% TOTAL penalties
 fsPenalty=fsPenaltyRand*randomfactor+fsPenaltySeq+randomfactor2*fsPenaltyReturn; 
 isPenalty=isPenaltyRand*randomfactor+isPenaltySeq+randomfactor2*isPenaltyReturn; 
 ssPenalty=ssPenaltyRand*randomfactor+ssPenaltySeq+randomfactor2*ssPenaltyReturn;
+smsPenalty=smsPenaltyRand*randomfactor+smsPenaltySeq*1/4+smsPenaltySeq2*1/4+smsPenaltySeq4*1/4+smsPenaltySeq8*1/4+randomfactor2*smsPenaltyReturn;
 
 %% FIGURE for random penalty
-semilogy( SELECTIVITIES,fsPenalty,'x-', SELECTIVITIES,isPenalty,'x-', SELECTIVITIES,ssPenalty,'x-');
+semilogy( SELECTIVITIES,fsPenalty,'x-', SELECTIVITIES,isPenalty,'x-', SELECTIVITIES,ssPenalty,'x-', SELECTIVITIES, smsPenalty, 'x-');
 title('Penalties for Range query on non-clustered data')
 xlabel('Selectivity')
 ylabel('Penalty')
-legend('Full Scan','Index Scan', 'Switch Scan')
+legend('Full Scan','Index Scan', 'Switch Scan', 'Smooth Scan')
 
 %%
