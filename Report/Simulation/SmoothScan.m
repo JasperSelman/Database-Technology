@@ -1,12 +1,9 @@
 classdef SmoothScan < IndexScan & handle
     properties
-        thresholdM2 = 0.02;
-        thresholdM3 = 0.05;
-        thresholdM4_4 = 0.10;
-        thresholdM4_8 = 0.20;
-        sequentialPagePenalty_2 = 0;
-        sequentialPagePenalty_4 = 0;
-        sequentialPagePenalty_8 = 0;
+        thresholdM23    = 1;
+        thresholdM34    = 0.005;
+        
+        previousPage = -1;
     end      
 
     methods
@@ -14,166 +11,98 @@ classdef SmoothScan < IndexScan & handle
             obj@IndexScan(Data);
         end
         
+        function page_card = parsePage(obj, pagenum)
+            page_card = 0;
+            
+            PAGE = obj.Data(:,pagenum);
+            
+            if(PAGE(1) == -1)
+                return;
+            end
+            
+            %Check if sequential or random
+            if(pagenum == obj.previousPage + 1)
+                obj.sequentialPagePenalty = obj.sequentialPagePenalty + 1;
+            else
+                obj.randomPagePenalty = obj.randomPagePenalty + 1;
+            end
+            obj.previousPage = pagenum;
+
+            %Look for all the 1's in this page
+            for j = 1 : size(PAGE,1)               
+                if(PAGE(j) == 1)            
+                    obj.returnPenalty = obj.returnPenalty + 1; 
+                    page_card = page_card + 1;      
+               end
+            end 
+
+            %Mark the page as done
+            obj.Data(1,pagenum) = -1;
+            
+        end
+        
         function smoothscan(obj)
             %Starting mode = 2 (Pessimistic Approach)
-            mode = 2;
+            curr_card = 0;
+            M4mult = 0.00;
 
             %Create a non-clustered index
-            index = 1 : size(obj.Data,2);
+            index = find(obj.Data)';
             index(randperm(numel(index))) = index;
-            curr_card = 0;
-            
-            %Change thresholds from selectivity to cardinality
-            obj.thresholdM2 = obj.thresholdM2 * numel(obj.Data);
-            obj.thresholdM3 = obj.thresholdM3 * numel(obj.Data);
-            obj.thresholdM4_4 = obj.thresholdM4_4 * numel(obj.Data);
-            obj.thresholdM4_8 = obj.thresholdM4_8 * numel(obj.Data);
+            index = [ index zeros(1,size(obj.Data,1) - ...
+                mod(numel(index),size(obj.Data,1)))];
+            index = reshape(index,size(obj.Data,1),[]);
                   
-            %% MODE 2
-            %- Index scan with scanning rest of page
-            %- Keep track of scanned page
+            %Change thresholds from selectivity to cardinality
+            obj.thresholdM23 = obj.thresholdM23 * numel(obj.Data);
+            obj.thresholdM34 = obj.thresholdM34 * numel(obj.Data);
             
+            %%
             % Walk the tree
             obj.randomPagePenalty = obj.randomPagePenalty + obj.height;
-            cnt = 0;
             
-            % For each column in Data (which are the pages)
-            for i = index
-                %quit this mode if the mode is incremented
-                if(curr_card >= obj.thresholdM2)
-                	mode = 3;
-                	break;
-                end
+            for LEAF = index               
+                %Pay a randompagepenalty for jumping to the next leaf
+                obj.randomPagePenalty = obj.randomPagePenalty + 1;
+                %obj.previousPage = -1;
                 
-                %Select a page according to the index
-                PAGE = obj.Data(:,i);
-                
-                %It is impossible for IndexScan to come across 
-                %Pages only containing 0's, so skip these
-                if 1 && ~any(PAGE)   
-                    continue;
-                end
-                
-                %For each tuple 
-                %(We run trough the whole page, even if the card is to high)
-                for j = 1 : size(PAGE,1)               
-                    if(PAGE(j) == 1)                        
-                        obj.returnPenalty = obj.returnPenalty + 1; 
-                        curr_card = curr_card + 1;
-                        cnt = cnt + 1;
-                      
-                        %For each Ps we have at least 1 sequential access as well
-                        if(cnt == obj.Ps)
-                            obj.sequentialPagePenalty = obj.sequentialPagePenalty + 1;
-                            cnt = 0;
-                        end
-                     
-                   end
-                end 
-                %Mark page as done
-                obj.Data(1,i) = -1;
-            end
-            
-            
-            %% MODE 3
-            %- Switch to Full scan
-            %- Do not fetch pages that are already fetched
-            if(mode == 3)
-                nextIsRandom = true;
-                
-                for i = 1 : size(obj.Data,2)
-                    %Check if we can go to the next mode
-                    if(curr_card >= obj.thresholdM3)
-                        mode = 4;
+                for TUPLE = LEAF'
+                    %Exit if we find end of valid values (0's)
+                    if(TUPLE == 0)
                         break;
                     end
-                    
-                    %Skip if the page is already fetched before
-                    if(obj.Data(1,i) == -1)
-                        nextIsRandom = true;
-                        continue;
-                    end
-             
-                    %Fetch the page sequentially if possible
-                    PAGE = obj.Data(:,i);
-                    if(nextIsRandom)
-                        nextIsRandom = false;
-                        obj.randomPagePenalty = obj.randomPagePenalty + 1;
+                    %Set the max number of seq fetches based on the mode
+                    if(curr_card >= obj.thresholdM34)
+                        M4mult = M4mult + 0.6; %We are in MODE 3+ (4)
+                        max_seq = 256 * ceil(M4mult);
+                    elseif(curr_card >= obj.thresholdM23)
+                        max_seq = 200;            %We are in MODE 3
                     else
-                        obj.sequentialPagePenalty = obj.sequentialPagePenalty + 1;
+                        max_seq = 1;            %We are in MODE 2
                     end
                     
-                    for j = 1 : size(PAGE,1)
-                        if(PAGE(j) == 1)                        
-                            obj.returnPenalty = obj.returnPenalty + 1; 
-                            curr_card = curr_card + 1;
+                    %find to which page i points
+                    pagenum = ceil(TUPLE / size(obj.Data,1));
+                    
+                    %Find the real max number of seq fetches
+                    ubound = pagenum + max_seq - 1;
+                    if(ubound > size(obj.Data,2))
+                        ubound = size(obj.Data,2); 
+                    end
+                    for cnt = pagenum : ubound
+                        if(obj.Data(1,cnt) == -1)
+                            break;
                         end
-                    end  
-                    obj.Data(1,i) = -1;
+                    end
+                    
+                    %Sequential parse cnt number of pages
+                    for i = pagenum : cnt
+                        curr_card = curr_card + parsePage(obj,i);
+                    end              
                 end
-                
             end
             
-            %% MODE 3+ (4)
-            %- Start fetching multiple pages at once
-            %- 1, 2, 4 or 8 pages depending on if we find a 
-            if(mode == 4)
-                pcnt = 0;
-                
-                %Continue where we left
-                for j = i : size(obj.Data,2)
-                    %Skip if the page is already fetched before
-                    %The next page is fetched random
-                    if(obj.Data(1,j) == -1)
-                        obj.randomPagePenalty = obj.randomPagePenalty + 1;
-                        obj.sequentialPagePenalty = obj.sequentialPagePenalty - 1;
-                        continue;
-                    end
-                    
-                    if(pcnt == 0)
-                        %Count the number of pages to fetch at once
-                        %Maximum 8, stop counting when a fetched page is found
-                        for pcnt = j : j+8
-                            if(pcnt <= size(obj.Data,2))
-                                if(obj.Data(1,pcnt) == -1)
-                                    break;
-                                end
-                            else
-                                break;
-                            end
-                        end
-                        pcnt = pcnt - j;
-
-                        %Correct the pcnt and add the burst pentalties
-                        if(pcnt == 8 && curr_card >= obj.thresholdM4_8)
-                            obj.sequentialPagePenalty_8 = obj.sequentialPagePenalty_8 + 1;
-                        elseif(pcnt >= 4 && curr_card >= obj.thresholdM4_4)
-                            pcnt = 4;
-                            obj.sequentialPagePenalty_4 = obj.sequentialPagePenalty_4 + 1;
-                        elseif(pcnt >= 2)
-                            pcnt = 2;
-                            obj.sequentialPagePenalty_2 = obj.sequentialPagePenalty_2 + 1;
-                        else
-                            pcnt = 1;
-                            obj.sequentialPagePenalty = obj.sequentialPagePenalty + 1;
-                        end
-                    end
-                    
-                    %If the pages have been fetched in a burst
-                    %We only have to count the 1's
-                    if(pcnt >= 1)
-                        PAGE = obj.Data(:,j);
-                        for k = 1 : size(PAGE,1)
-                            if(PAGE(k) == 1)                        
-                                obj.returnPenalty = obj.returnPenalty + 1; 
-                                curr_card = curr_card + 1;
-                            end
-                        end 
-                        obj.Data(1,j) = -1;
-                        pcnt = pcnt - 1;
-                    end
-                end
-            end
+       
 
         end
     end
