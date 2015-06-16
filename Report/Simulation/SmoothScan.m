@@ -1,9 +1,9 @@
 classdef SmoothScan < IndexScan & handle
     properties
-        thresholdM2 = 0.01;
+        thresholdM2 = 0.02;
         thresholdM3 = 0.05;
         thresholdM4_4 = 0.10;
-        thresholdM4_8 = 0.15;
+        thresholdM4_8 = 0.20;
         sequentialPagePenalty_2 = 0;
         sequentialPagePenalty_4 = 0;
         sequentialPagePenalty_8 = 0;
@@ -17,8 +17,7 @@ classdef SmoothScan < IndexScan & handle
         function smoothscan(obj)
             %Starting mode = 2 (Pessimistic Approach)
             mode = 2;
-            cnt = 0;
-            
+
             %Create a non-clustered index
             index = 1 : size(obj.Data,2);
             index(randperm(numel(index))) = index;
@@ -46,11 +45,16 @@ classdef SmoothScan < IndexScan & handle
                 	break;
                 end
                 
-                % Select a page according to the index
-                obj.randomPagePenalty = obj.randomPagePenalty + 1;
+                %Select a page according to the index
                 PAGE = obj.Data(:,i);
                 
-                % For each tuple 
+                %It is impossible for IndexScan to come across 
+                %Pages only containing 0's, so skip these
+                if 1 && ~any(PAGE)   
+                    continue;
+                end
+                
+                %For each tuple 
                 %(We run trough the whole page, even if the card is to high)
                 for j = 1 : size(PAGE,1)               
                     if(PAGE(j) == 1)                        
