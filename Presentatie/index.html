@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Smoothscan</title>
+
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/sky-edit.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">        
+        
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+                                                                                             
+			<div class="slides">
+                <!--voorstellen en inhoud-->
+				<section>
+                    <section>
+					    <h2>Smoothscan: one path to rule them all</h2>
+					    <h3>By:</h3>
+                        <p style="font-size: smaller;">
+                            <table>
+                                <tr>
+                                    <td>Sander Breukink</td>
+                                    <td>0741209</td>                       
+                                </tr>
+                                <tr>
+                                    <td>Rianne Conijn</td>
+                                    <td>0740635</td>                   
+                                </tr>
+                                <tr>
+                                    <td>Harm van Schaaijk</td>
+                                    <td>0873871</td>                         
+                                </tr>                                       
+                                <tr>
+                                    <td>Jasper Selman</td>
+                                    <td>0741516</td>                    
+                                </tr>                                  
+                                <tr>
+                                    <td>Tom Vogels</td>
+                                    <td>0871231</td>                     
+                                </tr>
+                            </table>
+                        </p>                                             
+                    </section>
+                    <section>
+                        <h2>Contents</h2>
+                        <ol>
+                            <li>Report</li>           
+                            <li>Set-up</li>
+                            <li>Results compared</li>
+                            <li>Vragen</li>
+                        </ol>
+                    </section> 
+				</section> 
+                
+                <!--doel en eisen-->
+                <section>
+                    <section>
+                        <h2>Report</h2>
+                        <p>Lorem ipsum</p>
+                        <p class="fragment">More lorem ipsum</p>
+                    </section>
+                    <section>
+                        <h2>Points</h2>
+                        <ul>
+                            <li class="fragment">1</li>
+                            <li class="fragment">2</li>
+                            <li class="fragment">3</li>
+                            <li class="fragment">4</li> 
+                        </ul>
+                    </section>
+                </section>    
+                               
+                
+                <!--Vragen-->
+                <section>
+                    <section><h1>Questions?</h1></section>            
+                </section>         
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: false,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
