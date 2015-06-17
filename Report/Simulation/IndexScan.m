@@ -41,7 +41,7 @@ classdef IndexScan < Scan & handle
                     %For each Ps we have at least 1 sequential access as
                     %well
                     if(cnt == obj.Ps)
-                        obj.sequentialPagePenalty = obj.sequentialPagePenalty + 1;
+                        obj.randomPagePenalty = obj.randomPagePenalty + 1;
                         cnt = 0;
                     end
                 end
