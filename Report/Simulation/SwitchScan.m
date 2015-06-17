@@ -12,7 +12,7 @@ classdef SwitchScan < IndexScan & handle
             exp_selectivity = card / numel(obj.Data);
             Switch = false;
             
-            if(exp_selectivity+1 <= obj.threshold )
+            if(exp_selectivity <= obj.threshold )
                 curr_card = 0;
                 cnt = 0;
 
