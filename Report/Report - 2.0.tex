@@ -139,9 +139,9 @@ The costs for the \textit{Switch Scan} are a combination of the costs of the pre
 
 
 \subsection{Smooth scan}
-We tried to simulate the penalties of the \textit{Smooth Scan} based on the descriptions of the paper. We were not able to fully simulate the behavior, but we were able to make a good approximation. Our simulation starts in Mode 2, which is also known as the ''pessimistic'' approach in the paper. In Mode 2 we count the random page penalties for traversing the tree. When the current cardinality is higher then the set treshold for switching to Mode 3, the simulation will switch to Mode 3. Here the number of sequential page fetches, and thereby the sequential page costs is set on 200. When the current cardinality is higher then the set treshold for switching to Mode 3+, the simulation will switch to Mode 3+. Here the number of sequential page fetches will increase towards a full scan.
+We tried to simulate the penalties of the \textit{Smooth Scan} based on the descriptions of the paper. We were not able to fully simulate the behavior, but we were able to make a good approximation. Our simulation starts in Mode 2, which is also known as the ''pessimistic'' approach in the paper. In Mode 2 we count the random page penalties for traversing the tree. When the current cardinality is higher then the treshold for switching to Mode 3, the simulation will switch to Mode 3. Here the number of sequential page fetches, and thereby the sequential page costs is set to 200. When the current cardinality is higher then the  treshold for switching to Mode 3+, the simulation will switch to Mode 3+. In this mode the number of sequential page fetches will increase towards a full scan.
 
-We set the cardinality treshold for switching to Mode 3 on \textbf{!!!TODO!!!} and to Mode 3+ on 0.005 times the number of tuples in the data. The Matlab code for the simulation of the Switch scan can be found in Appendix \ref{appendixd}.
+We set the cardinality treshold for switching to Mode 3 on 0.001 and to Mode 3+ on 0.005 times the number of tuples in the data. The Matlab code for the simulation of the Switch scan can be found in Appendix \ref{appendixd}.
 
 
 \section{Verification results}
@@ -209,29 +209,30 @@ The one small part where the \textit{Switch Scan} is worse than both algorithms 
 %\pagebreak
 
 \subsection{Smooth Scan}
-Lastly, we extended the experiment with the \textit{Smooth Scan}. The penalties for this algorithm are shown in \autoref{fig:result3}. The \textit{Smooth Scan} was tested for three different distributions of the data in the dataset: random ordering of the tuples which need to be fetched, begin loaded, i.e., all important tuples are  at the beginning, and end loaded, i.e. all important tuples are at the end.
+Lastly, we extended the experiment with the \textit{Smooth Scan}. The penalties for this algorithm are shown in \autoref{fig:result2}. The \textit{Smooth Scan} was tested for three different distributions of the data in the dataset: random ordering of the tuples which need to be fetched, clustered data at the start of the table, i.e., all important tuples are at the beginning, and clustered data at the end of the table, i.e. all important tuples are at the end.
 
-For randomly distributed tuples and low selectivities smooth scan works almost as good as index scan and switch scan. For larger selectivities, smooth scan is better than switch scan, but switch scan is even better. These results are worse than the results the paper found for the pessimistic approach of the smooth scan, where was found that smooth scan is much better than index scan. These worse results might be explained by ... \textbf{TODO}
+For randomly distributed tuples and low selectivities \textit{Smooth Scan} works almost as good as \textit{Index Scan} and \textit{Switch Scan}. For larger selectivities, \textit{Smooth Scan} is better than and \textit{Index Scan}, but \textit{Switch Scan} seems to outperform it. These results are worse than the results the paper found for the pessimistic approach of the smooth scan, where was found that smooth scan is much better than \textit{Index Scan}. These worse results might be explained by the fact that we did not really implement the \textit{Smooth Scan} but tried to simulate the penalties for this scan. For these penalties the moment of switching, and therefore the thresholds for cardinality are very important. We have made estimates for these thresholds by reasoning them, not by really doing experiments like the authors of the original paper did. On top of that it is possible that the in the original paper the authors did all kind of optimizing stuff on the \textit{Smooth Scan} (like they did on the \textit{Index Scan}). We did not do that.
 
-However, for the cases where the important data is clustered, for example in the begin loaded and end loaded case, we find better results for smooth scan than in the paper. In these cases smooth scan outperforms index scan and full scan by far. This improvement in performance can be explained by the fact that in mode 2 of smooth scan the full page is fetched, and as the data is clustered, all the tuples on the page are important. Thus, it is very efficient that the whole page is fetched at once. 
+Now if we look at \autoref{fig:subfig3.3} we see that \textit{Smooth Scan} outperforms almost all other scans, except at the end. At that place \textit{Full Scan} performs slightly better than the \textit{Smooth Scan}. This again might be explained by the optimizing things the authors did to speed up \textit{Smooth Scan}. A weird thing to see is that \textit{Smooth Scan} follows a smooth curve until the cardinality reaches about 0.001. At this point \textit{Smooth Scan} morphs to mode 3, but since all relevant data is clustered at the start of the table \textit{Smooth Scan} immediately reaches the second threshold and morphs to mode 3+, this explains why the penalty rate explodes at this point, \textit{Smooth Scan} starts to fetch a whole bunch of pages at once and though these pages are fetched through sequential I/O accesses, they are still very costly compared to CPU cost. 
 
-\textbf{TODO WHAT ABOUT THE SPIKES IN C (I THINK SWITCHES TO MODE 3 AND MODE 3+ RESPECITVELY)}   
+If we look at the last figure, \autoref{fig:subfig3.4}, we see the interesting fact that \textit{Smooth Scan} follows the same curve as \textit{Index Scan} only with a lower penalty rate and therefore beating all the other scans. This is due to the simple fact that all data is clustered at the end. \textit{Smooth Scan} stays in the pessimistic second mode (which looks like an \textit{Index Scan}) but still scans a whole page instead of just the one tuple it was looking for. This is why the penalty rate is much lower for the \textit{Smooth Scan}.
+   
 \begin{figure}[ht!]
 \centering
 \subfigure[Paper results]{%
-	\includegraphics[width=0.4\textwidth]{images/theirresult}
+	\includegraphics[width=0.35\textwidth]{images/theirresult}
 	\label{fig:subfig3.1}}
 \quad
 \subfigure[Data randomly distributed]{%
-	\includegraphics[width=0.4\textwidth]{images/Result8-Smoothscan-random-card05}
+	\includegraphics[width=0.35\textwidth]{images/Result8-Smoothscan-random-card05}
 	\label{fig:subfig3.2}}
 
-\subfigure[Data begin loaded]{%
-	\includegraphics[width=0.4\textwidth]{images/Result8-Smoothscan-Beginloaded-card05}
+\subfigure[Data clustered at start]{%
+	\includegraphics[width=0.35\textwidth]{images/Result8-Smoothscan-Beginloaded-card05}
 	\label{fig:subfig3.3}}
 \quad
-\subfigure[Data end loaded]{%
-	\includegraphics[width=0.4\textwidth]{images/Result8-Smoothscan-Endloaded-card05}
+\subfigure[Data clustered at end]{%
+	\includegraphics[width=0.35\textwidth]{images/Result8-Smoothscan-Endloaded-card05}
 	\label{fig:subfig3.4}}
 %		
 \caption{Penalties for  \textit{Smooth Scan} \textit{Switch Scan}, \textit{Index Scan} and \textit{Full Scan} for a random query}
@@ -263,8 +264,11 @@ When you start with an \textit{Index Scan}, you do not have to complete the grea
 \pagebreak
 
 \section{Conclusion}
-\textbf{HIER NOG EEN MOOI STUKJE VERTELLEN WANNEER SMOOTHSCAN AF IS OF WANNEER WE BESLOTEN HEBBEN DAT DIT NIET MEER LUKT.}
-
+The authors of the original paper claimed that they created a new way of scanning big data \textit{Smooth Scan} which is way more robust than the widely used \textit{Full Scan} and \textit{Index Scan}. Though we were not able to do an exact verification where we implemented all the algorithms and did the same experiments, we were able to do a theoretical analysis where we compared the algorithms regarding the penalty rates they achieved for CPU cost and I/O access. Though we were not provided with the actual \textit{Smooth Scan} algorithm or the pseudo code of it, we were able to implement the algorithm on a description the authors gave in their original paper. We did experiments with all these algorithms (\textit{Full Scan}, \textit{Index Scan}, \textit{Switch Scan} and \textit{Smooth Scan}) on data which was randomly distributed and clustered. \\
+Though we did a theoretical analysis, we roughly achieved the same results which the original paper achieved. Therefore we can confirm that the assumptions which the authors claimed, that \textit{Smooth Scan} is a robust algorithm which outperforms \textit{Full Scan} and \textit{Index Scan} and does not depend on optimizers, were valid. \\
+Next to this validation we also investigated if it was usefull for the \textit{Switch Scan}, and therefore also for \textit{Smooth Scan}, to start with a \textit{Full Scan} mode instead of an \textit{Index Scan} mode \autoref{sec:extension}, but we concluded that this had no benefits to the original setup. \\
+\\
+At last we want to say that at this moment the authors are currently working on getting a patent for their algorithm. It would be interesting when this algorithm is really released, either in source code or compiled code, to do a real analysis instead of a theoretical analysis.
 \begin{thebibliography}{9}
 
 \bibitem{smoothscan}
