@@ -1,6 +1,6 @@
 classdef SmoothScan < IndexScan & handle
     properties
-        thresholdM23    = 1;
+        thresholdM23    = 0.01;
         thresholdM34    = 0.005;
         
         previousPage = -1;

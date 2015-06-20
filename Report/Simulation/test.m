@@ -20,7 +20,7 @@ for i=1:length(SELECTIVITIES)
     SELECTIVITY = SELECTIVITIES(i);
     %# Fill the array with 0 and 1 and reorder]
     size = int64((1-SELECTIVITY)*PAGECNT);
-    Data = [ones(TUPLECNT,floor(SELECTIVITY*PAGECNT)) zeros(TUPLECNT,floor((1-SELECTIVITY)*PAGECNT)) ];
+    Data = [ones(TUPLECNT,floor(SELECTIVITY*PAGECNT))  zeros(TUPLECNT,floor((1-SELECTIVITY)*PAGECNT))];
     %memory
     Data(randperm(numel(Data))) = Data;
 
@@ -45,7 +45,7 @@ for i=1:length(SELECTIVITIES)
     %% RUN a switch scan on the data above
     ss = SwitchScan(Data);
     ss.switchscan(cardinality);
-    ss
+    ss;
     ssPenaltyRand(i) = ss.randomPagePenalty;
     ssPenaltySeq(i)= ss.sequentialPagePenalty;
     ssPenaltyReturn(i)= ss.returnPenalty;
@@ -53,7 +53,7 @@ for i=1:length(SELECTIVITIES)
     %% RUN a smooth scan on the data above
     sms = SmoothScan(Data);
     sms.smoothscan();
-    sms
+    sms;
     smsPenaltyRand(i) = sms.randomPagePenalty;
     smsPenaltySeq(i)  = sms.sequentialPagePenalty;
     smsPenaltyReturn(i)= sms.returnPenalty;
